@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css" type="text/css" />
+  <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" type="text/css" />
+
+  <title></title>
+</head>
+
+<body>
+  <div class="container text-center">
+    <div class="columns"></div>
+
+    <h1><br />
+    <br />
+    URL Shortener</h1>
+  </div>
+
+  <div class="container text-center">
+    <div class="columns">
+
+      <div class="column col-6 col-mx-auto">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"></div>
+          </div>
+
+          <div class="panel-body">
+            {% if not short_url %}
+
+            <form method="post" action="">
+              <input class="form-input" name="url" type="text" id="url" placeholder="http://" />
+            </form>
+            <br />
+            <button type="submit" class="btn">Submit</button>
+            <br />
+            {% else %}
+            <span class="h3">Your shortened url : <a href="{{short_url}}">{{short_url}}</a></span> 
+            {% endif %}
+            <br />
+
+            <p>&copy; <a href="aadith.me">aadith v menon</a></p>
+          </div>
+        </div>
+
+        <div class="panel-footer"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
