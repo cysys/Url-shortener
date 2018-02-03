@@ -22,8 +22,7 @@
 
   <div class="container text-center">
     <div class="columns">
-
-      <div class="column col-6 col-mx-auto">
+      <div class="column col-8 col-mx-auto">
         <div class="panel">
           <div class="panel-header">
             <div class="panel-title"></div>
@@ -34,14 +33,9 @@
 
             <form method="post" action="">
               <input class="form-input" name="url" type="text" id="url" placeholder="http://" />
-            </form>
-            <br />
-            <button type="submit" class="btn">Submit</button>
-            <br />
-            {% else %}
-            <span class="h3">Your shortened url : <a href="{{short_url}}">{{short_url}}</a></span> 
-            {% endif %}
-            <br />
+            </form><br />
+            <button type="submit" class="btn">Submit</button><br />
+            {% else %} <span class="h3">Your shortened url : <a href="{{short_url}}">{{short_url}}</a></span> {% endif %}<br />
 
             <p>&copy; <a href="aadith.me">aadith v menon</a></p>
           </div>
