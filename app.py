@@ -8,7 +8,7 @@ from string import ascii_uppercase
 import base64
 
 app = Flask(__name__)
-host = 'http://l.aadith.me'
+host = 'http://cy-urlshortner.herokuapp.com'
 
 def table_check():
     create_table = """
