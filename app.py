@@ -84,4 +84,4 @@ def redirectToSite(short_url):
 
 if __name__ == '__main__':
 	table_check()
-	app.run(debug=True)
+	app.run()
