@@ -1,14 +1,17 @@
 from math import floor
 from flask import Flask, request, render_template, redirect
 from sqlite3 import OperationalError
-import string, sqlite3
+import string
+import sqlite3
 from urllib.parse import urlparse
 from string import ascii_lowercase
 from string import ascii_uppercase
 import base64
 
 app = Flask(__name__)
-host = 'localhost:5000'
+host = 'http://cy-urlshortner.herokuapp.com/'
+str_encode = str.encode
+
 
 def table_check():
     create_table = """
@@ -27,61 +30,66 @@ def table_check():
 
 # Encoder
 def base62(n):
-	base = string.digits + ascii_lowercase + ascii_uppercase
-	rem = n % 62
-	result = base[rem]
-	div = floor(n / 62)
+    base = string.digits + ascii_lowercase + ascii_uppercase
+    rem = n % 62
+    result = base[rem]
+    div = floor(n / 62)
 
-	while div:
-		rem = div % 62
-		div = floor(div / 62)
-		result = base[rem] + result
+    while div:
+        rem = div % 62
+        div = floor(div / 62)
+        result = base[rem] + result
 
-	return result
+    return result
 
 # Decoder
+
+
 def base10(n):
-	base = string.digits + ascii_lowercase + ascii_uppercase
-	l = len(n)
-	result = 0
-	for i in range(l):
-		result = 62 * result + base.find(n[i])
+    base = string.digits + ascii_lowercase + ascii_uppercase
+    l = len(n)
+    result = 0
+    for i in range(l):
+        result = 62 * result + base.find(n[i])
 
-	return result
+    return result
 
-@app.route('/', methods=['GET','POST'])
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-	if request.method == 'POST':
-		inUrl = str.encode(request.form.get('url'))
-		if urlparse(inUrl).scheme == '':
-			url = 'http://' + inUrl
-		else:
-			url = inUrl
-		with sqlite3.connect('urls.db') as conn:
-			cursor = conn.cursor()
-			res = cursor.execute('INSERT INTO WEB_URL (URL) VALUES (?)',[base64.urlsafe_b64encode(url)])
-			encoded_string = base62(res.lastrowid)
+    if request.method == 'POST':
+        original_url = str_encode(request.form.get('url'))
+        if urlparse(original_url).scheme == '':
+            url = 'http://' + original_url
+        else:
+            url = original_url
+        with sqlite3.connect('urls.db') as conn:
+            cursor = conn.cursor()
+            res = cursor.execute(
+                'INSERT INTO WEB_URL (URL) VALUES (?)',
+                [base64.urlsafe_b64encode(url)]
+            )
+            encoded_string = base62(res.lastrowid)
+        return render_template('index.html', short_url=host + encoded_string)
+    return render_template('index.html')
 
-		return render_template('index.html', short_url=host + encoded_string)
-
-	return render_template('index.html')
 
 @app.route('/<short_url>')
 def redirectToSite(short_url):
-	decoded = base10(short_url)
-	url = host
-	with sqlite3.connect('urls.db') as conn:
-		cursor = conn.cursor()
-		res = cursor.execute('SELECT URL FROM WEB_URL WHERE ID=?',[decoded])
+    decoded = base10(short_url)
+    url = host
+    with sqlite3.connect('urls.db') as conn:
+        cursor = conn.cursor()
+        res = cursor.execute('SELECT URL FROM WEB_URL WHERE ID=?', [decoded])
 
-		try:
-			short = res.fetchone()
-			if short is not None:
-				url = base64.urlsafe_b64decode(short[0])
-		except Exception as e:
-			print(e)
-	return redirect(url)
+        try:
+            short = res.fetchone()
+            if short is not None:
+                url = base64.urlsafe_b64decode(short[0])
+        except Exception as e:
+            print(e)
+    return redirect(url)
 
 if __name__ == '__main__':
-	table_check()
-	app.run()
+    table_check()
+    app.run()
